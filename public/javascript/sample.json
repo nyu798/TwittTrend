@@ -1,0 +1,10 @@
+[
+	{
+		"message":"hi man how are you i am in new york",
+		"location": { "lat": 40.730610, "lon" : -73.935242}
+	},
+	{
+		"message" : "hi man how are you i am at Las Angles",
+		"location": {"lat":36.1699, "lon": 115.1398}
+	}
+]

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include partials/head.ejs %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  </head>
+  <body>
+  
+    <div id="test_websocket">
+    </div>
+       <div id="container">
+      <div id="page-header">
+        </br><img id="logo-image" src="/Images/logo_twitter.png" />
+        <h1>Tweet Map Application</h1>
+      </div>
+      <div id="page-body"> 
+        <div id="drop-down-wrapper">
+           <div id="drop-down-heading"> Filter tweets by keyword </div>
+          <div id=filters align='center'>
+            <input type = "text" id="match_text">
+            <input type ="submit" value="search" id="search">
+          </div>
+        </div></br>
+        <div id="map" align='center'></div>
+      </div>
+    </div>
+
+
+    <!-- <div id="container">
+    <div id="page-header">
+      </br><img id="logo-image" src="/Images/logo_twitter.png" />
+      <h1>Tweet Map Application</h1>
+    </div>
+    <div id="page-body"> 
+      <div id="drop-down-wrapper">
+         <div id="drop-down-heading"> Filter tweets by keyword </div>
+        <div id=filters align='center'>
+          <select id="mainselection">
+            <option value="trump">Trump</option>
+            <option value="spring">Spring </option>
+            <option value="healtcare">Healtcare</option>
+            <option value="politics">Politics</option>
+            <option value="women">Womans Day</option>
+            <option value="fc barcelona">FC Barcelona</option>
+            <option value="modi">Narendra Modi(NaMo)</option> 
+            <option value="nike">Nike</option>
+            <option value="football">Football</option>
+            <option value="holi">Holi</option>
+            <option value="love">Love</option>
+          </select>
+        </div>
+      </div></br>
+      <div id="map" align='center'></div>
+    </div>
+  </div> -->
+ 
+  <script async defer src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDSlwG2J0i6AmO82M3e6VQYQKB4d4NS7ek&callback=initMap" type="text/javascript"></script> 
+    <% include partials/scripts.ejs %>
+  </body>
+
+
+  <script type="text/javascript">
+
+  // $(document).ready(function(){
+  //     $('#search').on('click', function(event){
+       var match_text = $('#match_text').val();
+  //     });
+  // });
+    var map;
+    function initMap() {
+        var mapOptions = {
+        zoom: 1,
+        center: new google.maps.LatLng(6.465422, 3.406448),
+        mapTypeId: "terrain"
+        };
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        fetch_data(mapOptions);
+    }
+    function fetch_data(mapOptions){
+      // send some data to the server
+      $('#search').on('click', function(event){
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        var match_text = $('#match_text').val();
+         $.get('/search?match_text=' + match_text, function (data) {
+          var count_positive = 0;
+          var count_negitive = 0;
+          var count_neutral = 0;
+          for(var i=0;i<data.length;i++)
+           {
+            console.log("inside the loop for parsing data with the length is:"+data.length);
+              // console.log('the value of score in the data is: '+ data[i]._source.score);
+              var label = data[i]._source.label;
+              var loc = data[i]._source.location;
+              var lat = loc.lat;
+              var lon = loc.lon;
+              var cen = {"lat": lat, "lng": lon};
+              var score = data[i]._source.score;
+              if(label == "positive")
+              {
+                var color_positive = '#228B22';
+                count_positive++;
+                // var latLong = new google.maps.LatLng(loc.lat, loc.lon);
+               
+                // var marker = new google.maps.Marker({
+                //       position: latLong,
+                //     });
+                // marker.setMap(map);
+          //       var cityCircle = new google.maps.Circle({
+          //             strokeColor: color_positive,
+          //             strokeOpacity: 0.8,
+          //             strokeWeight: 2,
+          //             fillColor: color_positive,
+          //             fillOpacity: 0.35,
+          //             map: map,
+          //             center: cen,
+          //             radius: 500
+          //       });
+              }
+              else if(label == "negitive")
+              {
+                var color_negitive = '#ff0000';
+                count_negitive++;
+                // var latLong = new google.maps.LatLng(loc.lat, loc.lon);
+               
+                // var marker = new google.maps.Marker({
+                //       position: latLong,
+                //     });
+                // marker.setMap(map);
+          //       var cityCircle = new google.maps.Circle({
+          //             strokeColor: color_negitive,
+          //             strokeOpacity: 0.8,
+          //             strokeWeight: 2,
+          //             fillColor: color_negitive,
+          //             fillOpacity: 0.35,
+          //             map: map,
+          //             center: cen,
+          //             radius: 500
+          //       });
+              }
+              else 
+              {
+                var color_neutral = '#0000ff';
+                count_neutral++;
+                // var latLong = new google.maps.LatLng(loc.lat, loc.lon);
+               
+                // var marker = new google.maps.Marker({
+                //       position: latLong,
+                //     });
+                // marker.setMap(map);
+          //       var cityCircle = new google.maps.Circle({
+          //             strokeColor: color_neutral,
+          //             strokeOpacity: 0.8,
+          //             strokeWeight: 2,
+          //             fillColor: color_,
+          //             fillOpacity: 0.35,
+          //             map: map,
+          //             center: cen,
+          //             radius: 500
+          //       });
+              }
+              console.log('the value of 1 is: '+ count_positive);
+              console.log('the value of 2 is: '+ count_neutral);
+              console.log('the value of 3 is: '+ count_negitive);
+            // console.log("the location we got for lat is: "+loc.lat);
+            // console.log("the location we got for lon is:"+loc.lon);
+               
+            // var latLong = new google.maps.LatLng(loc.lat, loc.lon);
+               
+            // var marker = new google.maps.Marker({
+            //       position: latLong,
+            //     });
+            // marker.setMap(map);
+           }
+         });
+      });
+     // $('#mainselection').change(function(){
+     //  map = new google.maps.Map(document.getElementById('map'), mapOptions);
+     //  var selectedOption = $('#mainselection option:selected');
+     //  var match_text = selectedOption.val();
+     //  console.log("the match_text is:"+match_text);
+     //  $.get('/search?match_text=' + match_text, function (data) {
+     //    // console.log("the length of the data is :"+data.length);
+     //    for(var i=0;i<data.length;i++)
+     //    {
+     //      console.log("inside the loop for parsing data with the length is:"+data.length);
+     //      var loc = data[i]._source.location;
+     //      console.log("the location we got for lat is: "+loc.lat);
+     //      console.log("the location we got for lon is:"+loc.lon);
+             
+     //      var latLong = new google.maps.LatLng(loc.lat, loc.lon);
+             
+     //      var marker = new google.maps.Marker({
+     //            position: latLong,
+     //          });
+     //      marker.setMap(map);
+     //    }
+     //  });
+    }
+
+  </script>
+</html>
